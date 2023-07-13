@@ -13,36 +13,35 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.Java.Project.Service.EmployeeService;
 import com.Java.Project.entity.Employee;
-import com.Java.Project.repository.EmployeeRepo;
 
 @RestController
 @RequestMapping("/api/v1")
 public class MyController {
 
 	@Autowired
-	private EmployeeRepo repo;
+	private EmployeeService service;
 
 	@PostMapping(path="/createEmp")
 	public ResponseEntity<String> add(@RequestBody Employee emp){
-		repo.save(emp);
-		return new ResponseEntity<String>("Employee details added successfully", HttpStatus.CREATED);
+		return new ResponseEntity<String>(service.saveEmployee(emp), HttpStatus.CREATED);
 	}
 	
 	@GetMapping("/employees")
 	public ResponseEntity<List<Employee>> getAll(){	
-		return new ResponseEntity<>(repo.findAll(), HttpStatus.OK);
+		return new ResponseEntity<>(service.getEmployees(), HttpStatus.OK);
 	}
 	
 	@GetMapping("/employee/{name}")
 	public ResponseEntity<Employee> getSpecificEmployee(@PathVariable("name") String name){
-		return new ResponseEntity<>(repo.findByFirstName(name), HttpStatus.OK);
+		return new ResponseEntity<>(service.getEmployee(name), HttpStatus.OK);
 	}
 	
 	@DeleteMapping("/employee/{name}")
 	public String remove(@PathVariable("name") String name) {
-		repo.removeByFirstName(name);
-		return new String("Employee details removed successfully");
+		
+		return new String(service.deleteEmployee(name));
 	}
 	
 	
